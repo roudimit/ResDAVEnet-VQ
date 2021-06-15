@@ -1,5 +1,5 @@
 # ResDAVEnet-VQ
-Official PyTorch implementation of [Learning Hierarchical Discrete Linguistic 
+*An edit of* the official PyTorch implementation of [Learning Hierarchical Discrete Linguistic 
 Units from Visually-Grounded Speech](https://openreview.net/forum?id=B1elCp4KwH)
 
 

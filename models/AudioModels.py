@@ -173,7 +173,7 @@ class ResDavenetVQ(ResDavenet):
         if nframes is not None:
             indices = get_flattened_indices(nframes, bhwc[2])
             indices = indices.to(inputs.device)
-            ret_flat_inputs = torch.index_select(flat_inputs, 0, indices)
+            ret_flat_inputs = torch.index_select(flat_inputs, 0, indices.long())
 
         if not self.vqs_enabled[quant_idx]:
             return None, inputs, ret_flat_inputs, None

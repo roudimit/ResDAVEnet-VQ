@@ -155,7 +155,7 @@ def train(audio_model, image_model, train_loader, test_loader, args, exp_dir, re
             perplexities_str = numbers_to_str(perplexities)
 
             pooling_ratio = round(audio_input.size(-1) / audio_output.size(-1))
-            nframes.div_(pooling_ratio)
+            nframes = nframes.floor_divide(pooling_ratio)
             S = compute_pooldot_similarity_matrix(
                     image_output, audio_output, nframes)
             I2A_sampled_loss = sampled_triplet_loss_from_S(S, args.margin)
@@ -234,7 +234,6 @@ def train(audio_model, image_model, train_loader, test_loader, args, exp_dir, re
     print('Finished training. best_epoch = %s, best_acc = %s'
           % (best_epoch, best_acc))
 
-
 def validate(audio_model, image_model, val_loader, args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
@@ -268,7 +267,7 @@ def validate(audio_model, image_model, val_loader, args):
             A_embeddings.append(audio_output)
             
             pooling_ratio = round(audio_input.size(-1) / audio_output.size(-1))
-            nframes.div_(pooling_ratio)
+            nframes = nframes.floor_divide(pooling_ratio)
 
             frame_counts.append(nframes.cpu())
 

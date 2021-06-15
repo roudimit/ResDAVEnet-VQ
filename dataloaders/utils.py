@@ -62,7 +62,7 @@ def compute_spectrogram(y, native_sample_rate, audio_conf={}):
         logspec = np.pad(logspec, ((0,0),(0,p)), 'constant',
                          constant_values=(padval,padval))
     elif p < 0:
-        print('WARNING: truncate %d/%d frames' % (-p, n_frames))
+        #print('WARNING: truncate %d/%d frames' % (-p, n_frames))
         logspec = logspec[:,0:p]
         n_frames = target_length
 
