@@ -253,9 +253,12 @@ def load_progress(prog_pkl, quiet=False):
     def _print(msg):
         if not quiet:
             print(msg)
-
-    with open(prog_pkl, "rb") as f:
-        prog = pickle.load(f)
+    try:
+        with open(prog_pkl, "rb") as f:
+            prog = pickle.load(f)
+            epoch, global_step, best_epoch, best_avg_r10, _ = prog[-1]
+    except:
+        prog = [[0, 0, 0, 0, 0]]
         epoch, global_step, best_epoch, best_avg_r10, _ = prog[-1]
 
     _print("\nPrevious Progress:")

@@ -69,18 +69,19 @@ def train(audio_model, image_model, train_loader, test_loader, args, exp_dir, re
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     torch.set_grad_enabled(True)
 
-    print('Found %d GPUs' % torch.cuda.device_count())
-    if not isinstance(audio_model, torch.nn.DataParallel):
-        audio_model = nn.DataParallel(audio_model)
-    if not isinstance(image_model, torch.nn.DataParallel):
-        image_model = nn.DataParallel(image_model)
-
     if epoch != 0:
         audio_model.load_state_dict(
                 torch.load("%s/models/audio_model.iter.pth" % (exp_dir)))
         image_model.load_state_dict(
                 torch.load("%s/models/image_model.iter.pth" % (exp_dir)))
         print("loaded parameters from epoch %d" % epoch)
+
+    print('Found %d GPUs' % torch.cuda.device_count())
+    if not isinstance(audio_model, torch.nn.DataParallel):
+        audio_model = nn.DataParallel(audio_model)
+    if not isinstance(image_model, torch.nn.DataParallel):
+        image_model = nn.DataParallel(image_model)
+
     audio_model = audio_model.to(device)
     image_model = image_model.to(device)
 
@@ -105,13 +106,16 @@ def train(audio_model, image_model, train_loader, test_loader, args, exp_dir, re
         raise ValueError('Optimizer %s is not supported' % args.optim)
 
     if epoch != 0:
-        optimizer.load_state_dict(
-                torch.load("%s/models/optim_state.iter.pth" % (exp_dir)))
-        for state in optimizer.state.values():
-            for k, v in state.items():
-                if isinstance(v, torch.Tensor):
-                    state[k] = v.to(device)
-        print("loaded state dict from epoch %d" % epoch)
+        try:
+            optimizer.load_state_dict(
+                    torch.load("%s/models/optim_state.iter.pth" % (exp_dir)))
+            for state in optimizer.state.values():
+                for k, v in state.items():
+                    if isinstance(v, torch.Tensor):
+                        state[k] = v.to(device)
+            print("loaded state dict from epoch %d" % epoch)
+        except:
+            print("could not load optimizer weights, initializing randomly")
     else:
         torch.save(audio_model.state_dict(), 
                    "%s/models/audio_model.e%d.pth" % (exp_dir, epoch))
